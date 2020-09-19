@@ -25,4 +25,8 @@ function clamp(val, min, max) {
   return Math.max(min, Math.min(val, max));
 }
 
-export { randomFloat, randomInt, randomOneIn, distance, clamp };
+function round(val) {
+  return Math.round(val);
+}
+
+export { randomFloat, randomInt, randomOneIn, distance, clamp, round };
