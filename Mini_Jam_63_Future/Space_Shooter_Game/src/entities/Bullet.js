@@ -14,10 +14,10 @@ const Bullet = (params) => {
 
     let newX = currentPosition.x + speed * deltaTime;
 
-    // if (newX > movementConstraints.x) {
-    //   console.log("dead bullet");
-    //   isDead = true;
-    // }
+    if (newX > movementConstraints.x) {
+      console.log("dead bullet");
+      isDead = true;
+    }
     console.log("newX", newX);
 
     sprite.setState({
@@ -30,8 +30,8 @@ const Bullet = (params) => {
   const getState = () => {
     const { position, texture } = sprite.getState();
     return {
-      texture,
       position,
+      texture,
       isDead,
       update,
     };

@@ -10,6 +10,7 @@ import Container from "./lib/Container";
 const WIDTH = 640;
 const HEIGHT = 300;
 const bulletContainer = Container();
+const enemyContainer = Container();
 const myGame = Game({
   width: WIDTH,
   height: HEIGHT,
@@ -37,39 +38,13 @@ const background = Sprite({
 const spaceship = Spaceship({
   spawnPosition: { x: 150, y: HEIGHT / 2 },
   controls: KeyboardControls(),
+  bulletContainer,
   movementConstraints: { x: WIDTH, y: HEIGHT },
 });
 
-const enemy = Enemy({
-  spawnPosition: {
-    x: WIDTH + 200,
-    y: HEIGHT / 2,
-  },
-});
-
 myGame.add(background);
+myGame.add(enemyContainer);
 myGame.add(bulletContainer);
 myGame.add(spaceship);
-myGame.add(enemy);
 
-myGame.run((deltaTime) => {
-  const { isFireing, position: spaceshipPosition } = spaceship.getState();
-  console.log(isFireing);
-
-  if (isFireing) {
-    console.log("fire them cannons!");
-    bulletContainer.setState({
-      nodeToAdd: Bullet({
-        position: {
-          x: spaceshipPosition.x,
-          y: spaceshipPosition.y,
-        },
-        movementConstraints: {
-          x: WIDTH,
-          y: HEIGHT,
-        },
-      }),
-    });
-    console.log(bulletContainer);
-  }
-});
+myGame.run();

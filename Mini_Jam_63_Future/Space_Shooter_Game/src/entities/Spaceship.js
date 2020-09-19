@@ -1,8 +1,14 @@
 import Sprite from "../lib/Sprite";
 import Container from "../lib/Container";
+import Bullet from "../entities/Bullet";
 
 const Spaceship = (params) => {
-  const { controls, spawnPosition, movementConstraints } = params;
+  const {
+    controls,
+    spawnPosition,
+    movementConstraints,
+    bulletContainer,
+  } = params;
   const sprite = Sprite({
     textureUrl: "./resources/Spaceship.png",
     position: spawnPosition,
@@ -18,6 +24,7 @@ const Spaceship = (params) => {
     const { inputVector, action } = controls.getState();
     const { position: currentPosition } = sprite.getState();
 
+    //handle movement
     let newX = currentPosition.x + inputVector.x * speed * deltaTime;
     let newY = currentPosition.y + inputVector.y * speed * deltaTime;
 
@@ -30,19 +37,27 @@ const Spaceship = (params) => {
       newY = movementConstraints.y - tileSize;
     }
 
-    if (action && currentTime - timeOfLastBullet > fireRate) {
-      isFireing = true;
-      timeOfLastBullet = currentTime;
-    } else {
-      isFireing = false;
-    }
-
     sprite.setState({
       position: {
         x: newX,
         y: newY,
       },
     });
+
+    //fire bullets
+    if (action && currentTime - timeOfLastBullet > fireRate) {
+      timeOfLastBullet = currentTime;
+      bulletContainer.setState({
+        nodeToAdd: Bullet({
+          position: {
+            x: currentPosition.x,
+            y: currentPosition.y,
+          },
+          movementConstraints,
+        }),
+      });
+    } else {
+    }
   };
 
   const getState = () => {
