@@ -1,7 +1,13 @@
 import Texture from "./Texture";
 
 const Sprite = (params) => {
-  const { textureUrl, position = { x: 0, y: 0 } } = params;
+  const {
+    textureUrl,
+    position = { x: 0, y: 0 },
+    anchor,
+    rotation,
+    pivot,
+  } = params;
   const currentPosition = position;
   let texture = Texture({ url: textureUrl });
 
@@ -9,6 +15,9 @@ const Sprite = (params) => {
     return {
       texture,
       position: currentPosition,
+      anchor,
+      rotation,
+      pivot,
     };
   };
 

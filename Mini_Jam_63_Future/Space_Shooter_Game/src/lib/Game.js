@@ -16,7 +16,7 @@ const Game = (params) => {
 
     function loop(ms) {
       requestAnimationFrame(loop);
-      const currentTime = ms / loop; //convert miliseconds to seconds
+      const currentTime = ms / 1000; //convert miliseconds to seconds
       deltaTime = currentTime - timeOfLastFrame;
       timeOfLastFrame = currentTime;
 
