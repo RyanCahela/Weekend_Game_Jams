@@ -38,7 +38,6 @@ const CanvasRenderer = (params) => {
         } = node.getState();
 
         if (isHidden) return;
-        console.log(node.getState());
 
         ctx.save();
 

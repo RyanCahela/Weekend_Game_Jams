@@ -17,19 +17,21 @@ const EnemySpawner = (params) => {
       enemyContainer.setState({
         nodeToAdd: Enemy({
           spawnPosition: {
-            x: movementConstraints.x - enemySize,
+            x: movementConstraints.x + enemySize,
             y: randomInt(0, movementConstraints.y - enemySize),
           },
           speed: randomInt(20, 200),
         }),
       });
+
+      spawnRate = spawnRate < 0.05 ? 0.6 : spawnRate * 0.97 + 0.001;
     }
 
     enemyContainer.setState({
       callbackToMap: (node) => {
         const { position } = node.getState();
 
-        if (position.x < 0) {
+        if (position.x < 0 - enemySize) {
           console.log("dead enemy");
           node.setState({
             isDead: true,

@@ -94,27 +94,28 @@ const myGame = Game({
 
 let scoreAmount = 0;
 let gameState = "START_SCREEN";
-let timeSinceLastAction = 0;
-let actionRate = 2;
+let inputDelayTime = 3; //seconds
+let delayTimeElapsed = 0;
 myGame.run((deltaTime, currentTime) => {
-  if (deltaTime < actionRate) timeSinceLastAction += deltaTime;
   if (gameState === "START_SCREEN") {
     const { action } = controls.getState();
-    if (action && timeSinceLastAction > actionRate) {
+    if (action) {
       changeState("MAIN_GAME");
-      timeSinceLastAction -= actionRate;
     }
   }
 
   if (gameState === "GAME_OVER_SCREEN") {
+    if (deltaTime < inputDelayTime) delayTimeElapsed += deltaTime;
     const { action } = controls.getState();
-    if (action && timeSinceLastAction > actionRate) {
+    if (action && delayTimeElapsed > inputDelayTime) {
       changeState("START_SCREEN");
-      timeSinceLastAction -= actionRate;
+      delayTimeElapsed = 0;
     }
   }
 
-  checkForCollisions(deltaTime, currentTime);
+  if (gameState === "MAIN_GAME") {
+    checkForCollisions(deltaTime, currentTime);
+  }
 });
 
 function init(deltaTime, currentTime) {
