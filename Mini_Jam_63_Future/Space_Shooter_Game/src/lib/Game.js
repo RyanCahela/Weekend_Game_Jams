@@ -40,10 +40,17 @@ const Game = (params) => {
     });
   };
 
+  const clearSceneGraph = () => {
+    scene.setState({
+      clear: true,
+    });
+  };
+
   return Object.freeze({
     run,
     add,
     remove,
+    clearSceneGraph,
   });
 };
 

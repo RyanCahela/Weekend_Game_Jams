@@ -12,8 +12,8 @@ const Text = (params) => {
   const setState = (params) => {
     const {
       text,
-      styles: newStyles = {},
-      position: newPostion = { x: 0, y: 0 },
+      styles: newStyles = { ...styles },
+      position: newPostion = { x: position.x, y: position.y },
       isHidden,
     } = params;
     if (text) currentText = text;
@@ -25,7 +25,10 @@ const Text = (params) => {
     }
     if (position.x !== undefined) position.x = newPostion.x;
     if (position.y !== undefined) position.y = newPostion.y;
-    if (isHidden !== undefined) currentIsHidden = isHidden;
+    if (isHidden !== undefined) {
+      currentIsHidden = isHidden;
+      console.log(`currentIsHidden for ${currentText}`, currentIsHidden);
+    }
   };
 
   const getState = () => {

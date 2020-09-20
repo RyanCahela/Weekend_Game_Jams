@@ -10,19 +10,11 @@ import Background from "./entities/Background";
 const WIDTH = 640;
 const HEIGHT = 300;
 
-const bulletContainer = Container({
-  isHidden: true,
-});
-const enemyContainer = Container();
+let bulletContainer = null;
+let enemyContainer = null;
 const controls = KeyboardControls();
-const spaceship = Spaceship({
-  spawnPosition: { x: 150, y: HEIGHT / 2 },
-  controls,
-  bulletContainer,
-  movementConstraints: { x: WIDTH, y: HEIGHT },
-  isHidden: true,
-});
-const score = Text({
+let spaceship = null;
+let score = Text({
   text: "Score: 0",
   styles: {
     fill: "#ff4d4d",
@@ -31,18 +23,11 @@ const score = Text({
   },
   position: {
     x: WIDTH / 2,
-    y: HEIGHT / 2,
+    y: 30,
   },
   isHidden: true,
 });
-const enemySpawner = EnemySpawner({
-  movementConstraints: {
-    x: WIDTH,
-    y: HEIGHT,
-  },
-  enemyContainer,
-  isHidden: true,
-});
+let enemySpawner = null;
 const title = Text({
   text: "StarBox 63",
   styles: {
@@ -108,12 +93,24 @@ const myGame = Game({
 });
 
 let scoreAmount = 0;
-let gameState = null;
+let gameState = "START_SCREEN";
+let timeSinceLastAction = 0;
+let actionRate = 2;
 myGame.run((deltaTime, currentTime) => {
+  if (deltaTime < actionRate) timeSinceLastAction += deltaTime;
   if (gameState === "START_SCREEN") {
     const { action } = controls.getState();
-    if (action) {
+    if (action && timeSinceLastAction > actionRate) {
       changeState("MAIN_GAME");
+      timeSinceLastAction -= actionRate;
+    }
+  }
+
+  if (gameState === "GAME_OVER_SCREEN") {
+    const { action } = controls.getState();
+    if (action && timeSinceLastAction > actionRate) {
+      changeState("START_SCREEN");
+      timeSinceLastAction -= actionRate;
     }
   }
 
@@ -121,6 +118,31 @@ myGame.run((deltaTime, currentTime) => {
 });
 
 function init(deltaTime, currentTime) {
+  myGame.clearSceneGraph();
+  scoreAmount = 0;
+  bulletContainer = Container({
+    isHidden: true,
+  });
+
+  enemyContainer = Container();
+
+  spaceship = Spaceship({
+    spawnPosition: { x: 150, y: HEIGHT / 2 },
+    controls,
+    bulletContainer,
+    movementConstraints: { x: WIDTH, y: HEIGHT },
+    isHidden: true,
+  });
+
+  enemySpawner = EnemySpawner({
+    movementConstraints: {
+      x: WIDTH,
+      y: HEIGHT,
+    },
+    enemyContainer,
+    isHidden: true,
+  });
+
   myGame.add(background);
   myGame.add(enemySpawner);
   myGame.add(spaceship);
@@ -130,57 +152,23 @@ function init(deltaTime, currentTime) {
   myGame.add(gameOverContinueText);
   myGame.add(gameOverText);
   myGame.add(score);
-  changeState("START_SCREEN");
-}
-
-function checkForCollisions(deltaTime, currentTime) {
-  const { nodes: bullets } = bulletContainer.getState();
-  const { nodes: enemies } = enemySpawner.getState();
-
-  enemies.map((enemy) => {
-    bullets.map((bullet) => {
-      const { position: bulletPosition } = bullet.getState();
-      const { position: enemyPosition } = enemy.getState();
-      if (distance(bulletPosition, enemyPosition) < 24) {
-        bullet.setState({
-          isDead: true,
-        });
-
-        enemy.setState({
-          isDead: true,
-        });
-
-        scoreAmount += Math.round(currentTime);
-        score.setState({
-          text: `Score: ${scoreAmount}`,
-        });
-      }
-    });
-
-    const { position: enemyPosition } = enemy.getState();
-    const {
-      position: spaceshipPosition,
-      isDead: isDeadSpaceship,
-    } = spaceship.getState();
-
-    //detect game over
-    if (isDeadSpaceship) return;
-    if (distance(enemyPosition, spaceshipPosition) < 32) {
-      enemy.setState({
-        isDead: true,
-      });
-
-      spaceship.setState({
-        isDead: true,
-      });
-
-      changeState("GAME_OVER_SCREEN");
-    }
-  });
 }
 
 function changeState(newState) {
   if (newState === "START_SCREEN") {
+    gameOverContinueText.setState({
+      isHidden: true,
+    });
+
+    gameOverText.setState({
+      isHidden: true,
+    });
+
+    score.setState({
+      text: "Score: 0",
+    });
+
+    init();
     gameState = newState;
   }
 
@@ -228,4 +216,49 @@ function changeState(newState) {
   }
 }
 
+function checkForCollisions(deltaTime, currentTime) {
+  const { nodes: bullets } = bulletContainer.getState();
+  const { nodes: enemies } = enemySpawner.getState();
+
+  enemies.map((enemy) => {
+    bullets.map((bullet) => {
+      const { position: bulletPosition } = bullet.getState();
+      const { position: enemyPosition } = enemy.getState();
+      if (distance(bulletPosition, enemyPosition) < 24) {
+        bullet.setState({
+          isDead: true,
+        });
+
+        enemy.setState({
+          isDead: true,
+        });
+
+        scoreAmount += Math.round(currentTime);
+        score.setState({
+          text: `Score: ${scoreAmount}`,
+        });
+      }
+    });
+
+    const { position: enemyPosition } = enemy.getState();
+    const {
+      position: spaceshipPosition,
+      isDead: isDeadSpaceship,
+    } = spaceship.getState();
+
+    //detect game over
+    if (isDeadSpaceship) return;
+    if (distance(enemyPosition, spaceshipPosition) < 32) {
+      enemy.setState({
+        isDead: true,
+      });
+
+      spaceship.setState({
+        isDead: true,
+      });
+
+      changeState("GAME_OVER_SCREEN");
+    }
+  });
+}
 init();
