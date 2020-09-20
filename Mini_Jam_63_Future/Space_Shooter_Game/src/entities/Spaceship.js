@@ -1,6 +1,6 @@
-import Sprite from "../lib/Sprite";
-import Container from "../lib/Container";
+import TileSprite from "../lib/TileSprite";
 import Bullet from "../entities/Bullet";
+import AnimationManager from "../lib/AnimationManager";
 
 const Spaceship = (params) => {
   const {
@@ -10,10 +10,29 @@ const Spaceship = (params) => {
     bulletContainer,
     isHidden,
   } = params;
-  const sprite = Sprite({
-    textureUrl: "./resources/Spaceship.png",
+  const tileSprite = TileSprite({
+    textureUrl: "./resources/SpaceshipSpriteSheet.png",
     position: spawnPosition,
     anchor: { x: -16, y: -16 },
+    tileWidth: 32,
+    tileHeight: 32,
+    frame: { x: 0, y: 0 },
+  });
+  const animationManager = AnimationManager();
+  animationManager.setState({
+    animaitonToAdd: {
+      name: "fly",
+      frames: [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 3, y: 0 },
+      ],
+      rate: 0.3,
+    },
+  });
+  animationManager.setState({
+    animationToPlay: "fly",
   });
   const tileSize = 32;
   const speed = 200;
@@ -25,7 +44,9 @@ const Spaceship = (params) => {
 
   const update = (deltaTime, currentTime) => {
     const { inputVector, action } = controls.getState();
-    const { position: currentPosition } = sprite.getState();
+    const { position: currentPosition } = tileSprite.getState();
+    const { update: animationManagerUpdate } = animationManager.getState();
+    animationManagerUpdate(deltaTime, currentTime);
 
     //handle movement
     let newX = currentPosition.x + inputVector.x * speed * deltaTime;
@@ -40,7 +61,7 @@ const Spaceship = (params) => {
       newY = movementConstraints.y - tileSize;
     }
 
-    sprite.setState({
+    tileSprite.setState({
       position: {
         x: newX,
         y: newY,
@@ -64,11 +85,20 @@ const Spaceship = (params) => {
   };
 
   const getState = () => {
-    const { position, texture } = sprite.getState();
+    const {
+      position,
+      texture,
+      frame,
+      tileWidth,
+      tileHeight,
+    } = tileSprite.getState();
     return {
       position,
       texture,
       update,
+      frame,
+      tileWidth,
+      tileHeight,
       isDead: currentIsDead,
       isHidden: currentIsHidden,
     };
