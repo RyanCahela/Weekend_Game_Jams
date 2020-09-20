@@ -16,6 +16,7 @@ const Spaceship = (params) => {
   });
   const tileSize = 32;
   const speed = 200;
+  const bulletFirePositionOffset = 12;
   let timeOfLastBullet = 0;
   let fireRate = 0.3;
   let isFireing = false;
@@ -50,8 +51,8 @@ const Spaceship = (params) => {
       bulletContainer.setState({
         nodeToAdd: Bullet({
           position: {
-            x: currentPosition.x,
-            y: currentPosition.y,
+            x: currentPosition.x + bulletFirePositionOffset,
+            y: currentPosition.y + bulletFirePositionOffset,
           },
           movementConstraints,
         }),

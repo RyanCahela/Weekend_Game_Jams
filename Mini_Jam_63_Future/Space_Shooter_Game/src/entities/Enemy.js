@@ -1,12 +1,13 @@
 import Sprite from "../lib/Sprite";
+import { randomInt } from "../utils/math";
 
 const Enemy = (params) => {
-  const { spawnPosition } = params;
+  const { spawnPosition, speed = 500 } = params;
   const sprite = Sprite({
     textureUrl: "./resources/Enemy.png",
     position: spawnPosition,
   });
-  const speed = 200;
+  let currentIsDead = false;
 
   const update = (deltaTime, currentTime) => {
     const { position } = sprite.getState();
@@ -20,17 +21,26 @@ const Enemy = (params) => {
     });
   };
 
+  const setState = (params) => {
+    const { isDead } = params;
+    if (isDead) {
+      currentIsDead = isDead;
+    }
+  };
+
   const getState = () => {
     const { position, texture } = sprite.getState();
     return {
       texture,
       update,
       position,
+      isDead: currentIsDead,
     };
   };
 
   return Object.freeze({
     getState,
+    setState,
   });
 };
 

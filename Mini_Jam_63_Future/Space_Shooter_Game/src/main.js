@@ -6,11 +6,19 @@ import Spaceship from "./entities/Spaceship";
 import Bullet from "./entities/Bullet";
 import Enemy from "./entities/Enemy";
 import Container from "./lib/Container";
+import EnemySpawner from "./entities/EnemySpawner";
 
 const WIDTH = 640;
 const HEIGHT = 300;
 const bulletContainer = Container();
 const enemyContainer = Container();
+const enemySpawner = EnemySpawner({
+  movementConstraints: {
+    x: WIDTH,
+    y: HEIGHT,
+  },
+  enemyContainer,
+});
 const myGame = Game({
   width: WIDTH,
   height: HEIGHT,
@@ -43,8 +51,11 @@ const spaceship = Spaceship({
 });
 
 myGame.add(background);
-myGame.add(enemyContainer);
+myGame.add(enemySpawner);
 myGame.add(bulletContainer);
 myGame.add(spaceship);
 
-myGame.run();
+myGame.run((deltaTime, currentTime) => {
+  const { nodes: bullets } = bulletContainer.getState();
+  const { nodes: enemies } = enemySpawner.getState();
+});

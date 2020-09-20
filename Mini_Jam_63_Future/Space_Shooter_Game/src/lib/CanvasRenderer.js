@@ -88,7 +88,6 @@ const CanvasRenderer = (params) => {
         }
 
         if (nodes.length != 0) {
-          console.log(nodes);
           renderRecursive(node);
         }
 
