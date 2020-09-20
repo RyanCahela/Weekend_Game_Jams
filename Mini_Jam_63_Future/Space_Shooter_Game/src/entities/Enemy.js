@@ -6,6 +6,7 @@ const Enemy = (params) => {
   const sprite = Sprite({
     textureUrl: "./resources/Enemy.png",
     position: spawnPosition,
+    anchor: { x: -16, y: -16 },
   });
   let currentIsDead = false;
 

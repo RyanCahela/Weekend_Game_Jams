@@ -17,9 +17,9 @@ const Spaceship = (params) => {
   const tileSize = 32;
   const speed = 200;
   const bulletFirePositionOffset = 12;
+  let currentIsDead = false;
   let timeOfLastBullet = 0;
   let fireRate = 0.3;
-  let isFireing = false;
 
   const update = (deltaTime, currentTime) => {
     const { inputVector, action } = controls.getState();
@@ -67,12 +67,20 @@ const Spaceship = (params) => {
       position,
       texture,
       update,
-      isFireing,
+      isDead: currentIsDead,
     };
+  };
+
+  const setState = (params) => {
+    const { isDead } = params;
+    if (isDead) {
+      currentIsDead = isDead;
+    }
   };
 
   return Object.freeze({
     getState,
+    setState,
   });
 };
 

@@ -1,10 +1,11 @@
 const Text = (params) => {
   const {
     //defaults
-    text = "this is placeholder text",
     styles = { fill: "#f1f0ee", font: "20pt serif", align: "center" },
     position = { x: 0, y: 0 },
   } = params;
+
+  let { text: currentText = "this is placeholder text" } = params;
 
   const setState = (params) => {
     const {
@@ -12,7 +13,7 @@ const Text = (params) => {
       styles: newStyles,
       position: newPostion = { x: 0, y: 0 },
     } = params;
-    if (text) text = newText;
+    if (text) currentText = text;
     if (!Object.entries(newStyles).length === 0) {
       const { fill = "", align = "", font = "" } = newStyles;
       if (fill) styles.fill = fill;
@@ -25,7 +26,7 @@ const Text = (params) => {
 
   const getState = () => {
     return {
-      text,
+      text: currentText,
       styles,
       position,
     };
