@@ -3,15 +3,18 @@ const Text = (params) => {
     //defaults
     styles = { fill: "#f1f0ee", font: "20pt serif", align: "center" },
     position = { x: 0, y: 0 },
+    isHidden = false,
   } = params;
 
   let { text: currentText = "this is placeholder text" } = params;
+  let currentIsHidden = isHidden;
 
   const setState = (params) => {
     const {
       text,
-      styles: newStyles,
+      styles: newStyles = {},
       position: newPostion = { x: 0, y: 0 },
+      isHidden,
     } = params;
     if (text) currentText = text;
     if (!Object.entries(newStyles).length === 0) {
@@ -22,6 +25,7 @@ const Text = (params) => {
     }
     if (position.x !== undefined) position.x = newPostion.x;
     if (position.y !== undefined) position.y = newPostion.y;
+    if (isHidden !== undefined) currentIsHidden = isHidden;
   };
 
   const getState = () => {
@@ -29,6 +33,7 @@ const Text = (params) => {
       text: currentText,
       styles,
       position,
+      isHidden: currentIsHidden,
     };
   };
 

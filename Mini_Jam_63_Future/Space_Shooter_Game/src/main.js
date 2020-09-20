@@ -10,7 +10,9 @@ import Background from "./entities/Background";
 const WIDTH = 640;
 const HEIGHT = 300;
 
-const bulletContainer = Container();
+const bulletContainer = Container({
+  isHidden: true,
+});
 const enemyContainer = Container();
 const controls = KeyboardControls();
 const spaceship = Spaceship({
@@ -18,6 +20,7 @@ const spaceship = Spaceship({
   controls,
   bulletContainer,
   movementConstraints: { x: WIDTH, y: HEIGHT },
+  isHidden: true,
 });
 const score = Text({
   text: "Score: 0",
@@ -28,8 +31,9 @@ const score = Text({
   },
   position: {
     x: WIDTH / 2,
-    y: 20,
+    y: HEIGHT / 2,
   },
+  isHidden: true,
 });
 const enemySpawner = EnemySpawner({
   movementConstraints: {
@@ -37,6 +41,7 @@ const enemySpawner = EnemySpawner({
     y: HEIGHT,
   },
   enemyContainer,
+  isHidden: true,
 });
 const title = Text({
   text: "StarBox 63",
@@ -49,6 +54,7 @@ const title = Text({
     x: WIDTH / 2,
     y: 50,
   },
+  isHidden: false,
 });
 
 const gameOverText = Text({
@@ -62,6 +68,7 @@ const gameOverText = Text({
     x: WIDTH / 2,
     y: HEIGHT / 2,
   },
+  isHidden: true,
 });
 
 const gameOverContinueText = Text({
@@ -75,6 +82,7 @@ const gameOverContinueText = Text({
     x: WIDTH / 2,
     y: 200,
   },
+  isHidden: true,
 });
 
 const background = Background({
@@ -99,40 +107,30 @@ const myGame = Game({
   parentElementIdentifier: "#board",
 });
 
-let isGameOver = false;
 let scoreAmount = 0;
-let gameState = "START_GAME_SCREEN";
+let gameState = null;
 myGame.run((deltaTime, currentTime) => {
-  const { action } = controls.getState();
-
-  if (gameState === "START_GAME_SCREEN" && action) {
-    gameState = "MAIN_GAME_LOOP";
-    runMainGame();
-    return;
-  }
-
-  if (gameState === "GAME_OVER_SCREEN" && action) {
-    gameState = "START_GAME_SCREEN";
-    runStartGameScreen();
-    return;
-  }
-
-  if (gameState === "MAIN_GAME_LOOP" && isGameOver) {
-    gameState = "GAME_OVER_SCREEN";
-    runGameOverScreen();
-    return;
+  if (gameState === "START_SCREEN") {
+    const { action } = controls.getState();
+    if (action) {
+      changeState("MAIN_GAME");
+    }
   }
 
   checkForCollisions(deltaTime, currentTime);
 });
 
-function runMainGame(deltaTime, currentTime) {
-  myGame.remove(title);
-  myGame.remove(startGameMessage);
+function init(deltaTime, currentTime) {
+  myGame.add(background);
   myGame.add(enemySpawner);
   myGame.add(spaceship);
   myGame.add(bulletContainer);
+  myGame.add(title);
+  myGame.add(startGameMessage);
+  myGame.add(gameOverContinueText);
+  myGame.add(gameOverText);
   myGame.add(score);
+  changeState("START_SCREEN");
 }
 
 function checkForCollisions(deltaTime, currentTime) {
@@ -176,26 +174,58 @@ function checkForCollisions(deltaTime, currentTime) {
         isDead: true,
       });
 
-      isGameOver = true;
+      changeState("GAME_OVER_SCREEN");
     }
   });
 }
 
-function runGameOverScreen() {
-  myGame.add(gameOverText);
-  myGame.add(gameOverContinueText);
+function changeState(newState) {
+  if (newState === "START_SCREEN") {
+    gameState = newState;
+  }
+
+  if (newState === "MAIN_GAME") {
+    gameState = newState;
+    title.setState({
+      isHidden: true,
+    });
+
+    startGameMessage.setState({
+      isHidden: true,
+    });
+
+    spaceship.setState({
+      isHidden: false,
+    });
+
+    bulletContainer.setState({
+      isHidden: false,
+      clear: true,
+    });
+
+    enemySpawner.setState({
+      isHidden: false,
+      clear: true,
+    });
+
+    score.setState({
+      isHidden: false,
+    });
+
+    console.log(score.getState());
+  }
+
+  if (newState === "GAME_OVER_SCREEN") {
+    gameOverText.setState({
+      isHidden: false,
+    });
+
+    gameOverContinueText.setState({
+      isHidden: false,
+    });
+
+    gameState = newState;
+  }
 }
 
-function runStartGameScreen() {
-  myGame.remove(gameOverText);
-  myGame.remove(gameOverContinueText);
-  myGame.remove(enemySpawner);
-  myGame.remove(bulletContainer);
-  myGame.remove(spaceship);
-  myGame.remove(score);
-  myGame.add(background);
-  myGame.add(title);
-  myGame.add(startGameMessage);
-}
-
-runStartGameScreen();
+init();

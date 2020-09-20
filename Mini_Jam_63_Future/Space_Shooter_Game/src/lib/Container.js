@@ -1,9 +1,17 @@
-const Container = () => {
+const Container = (params = {}) => {
+  const { isHidden } = params;
   const position = { x: 0, y: 0 };
   let nodes = [];
+  let currentIsHidden = isHidden;
 
   const setState = (newState) => {
-    const { nodeToAdd, nodeToRemove, callbackToMap } = newState;
+    const {
+      nodeToAdd,
+      nodeToRemove,
+      callbackToMap,
+      clear = false,
+      isHidden = false,
+    } = newState;
 
     if (nodeToAdd) {
       nodes.push(nodeToAdd);
@@ -17,6 +25,14 @@ const Container = () => {
     if (callbackToMap) {
       nodes.map(callbackToMap);
     }
+
+    if (clear) {
+      nodes = [];
+    }
+
+    if (isHidden !== undefined) {
+      currentIsHidden = isHidden;
+    }
   };
 
   const getState = () => {
@@ -24,6 +40,7 @@ const Container = () => {
       nodes,
       position,
       update,
+      isHidden: currentIsHidden,
     };
   };
 

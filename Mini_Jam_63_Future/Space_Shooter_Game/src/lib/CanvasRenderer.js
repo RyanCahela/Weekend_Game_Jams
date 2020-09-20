@@ -21,7 +21,6 @@ const CanvasRenderer = (params) => {
     function renderRecursive(container) {
       const { nodes: parentContainerNodes } = container.getState();
       parentContainerNodes.forEach((node) => {
-        ctx.save();
         const {
           text = "",
           texture,
@@ -35,7 +34,12 @@ const CanvasRenderer = (params) => {
           rotation = 0,
           pivot = { x: 0, y: 0 },
           anchor = { x: 0, y: 0 },
+          isHidden = false,
         } = node.getState();
+
+        if (isHidden) return;
+
+        ctx.save();
 
         if (position) {
           const { x, y } = position;

@@ -8,6 +8,7 @@ const Spaceship = (params) => {
     spawnPosition,
     movementConstraints,
     bulletContainer,
+    isHidden,
   } = params;
   const sprite = Sprite({
     textureUrl: "./resources/Spaceship.png",
@@ -17,6 +18,7 @@ const Spaceship = (params) => {
   const tileSize = 32;
   const speed = 200;
   const bulletFirePositionOffset = 12;
+  let currentIsHidden = isHidden;
   let currentIsDead = false;
   let timeOfLastBullet = 0;
   let fireRate = 0.3;
@@ -68,13 +70,18 @@ const Spaceship = (params) => {
       texture,
       update,
       isDead: currentIsDead,
+      isHidden: currentIsHidden,
     };
   };
 
   const setState = (params) => {
-    const { isDead } = params;
+    const { isDead, isHidden } = params;
     if (isDead) {
       currentIsDead = isDead;
+    }
+
+    if (isHidden != undefined) {
+      currentIsHidden = isHidden;
     }
   };
 

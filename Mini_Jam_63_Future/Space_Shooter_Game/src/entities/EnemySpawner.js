@@ -3,10 +3,11 @@ import Enemy from "./Enemy";
 import { randomInt } from "../utils/math";
 
 const EnemySpawner = (params) => {
-  const { movementConstraints, enemyContainer } = params;
+  const { movementConstraints, enemyContainer, isHidden } = params;
   const enemySize = 32;
   let spawnRate = 1; //seconds
   let timeOfLastSpawn = 0;
+  let currentIsHidden = isHidden;
 
   const update = (deltaTime, currentTime) => {
     const { update } = enemyContainer.getState();
@@ -38,13 +39,22 @@ const EnemySpawner = (params) => {
     });
   };
 
-  const setState = () => {};
+  const setState = (params) => {
+    const { isHidden = false, clear = false } = params;
+    currentIsHidden = isHidden;
+    if (clear) {
+      enemyContainer.setState({
+        clear: true,
+      });
+    }
+  };
 
   const getState = () => {
     const { nodes } = enemyContainer.getState();
     return {
       update,
       nodes,
+      isHidden: currentIsHidden,
     };
   };
 
