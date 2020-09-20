@@ -13,7 +13,6 @@ const CanvasRenderer = (params) => {
   canvas.height = height;
   const view = canvas;
   const ctx = canvas.getContext("2d");
-  ctx.textBaseline = "top";
 
   const render = (container, clear = true) => {
     if (clear) ctx.clearRect(0, 0, width, height);

@@ -34,9 +34,16 @@ const Game = (params) => {
     });
   };
 
+  const remove = (nodeToRemove) => {
+    scene.setState({
+      nodeToRemove,
+    });
+  };
+
   return Object.freeze({
     run,
     add,
+    remove,
   });
 };
 

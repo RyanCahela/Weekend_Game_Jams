@@ -11,7 +11,7 @@ const Container = () => {
 
     if (nodeToRemove) {
       nodes = nodes.filter((node) => node != nodeToRemove);
-      return removeNode;
+      return nodeToRemove;
     }
 
     if (callbackToMap) {

@@ -18,7 +18,6 @@ const Bullet = (params) => {
       console.log("dead bullet");
       currentIsDead = true;
     }
-    console.log("newX", newX);
 
     sprite.setState({
       position: {
