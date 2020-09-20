@@ -22,7 +22,6 @@ const EnemySpawner = (params) => {
           speed: randomInt(20, 200),
         }),
       });
-      console.log(enemyContainer);
     }
 
     enemyContainer.setState({

@@ -81,17 +81,15 @@ myGame.run((deltaTime, currentTime) => {
       runGameOverScreen(deltaTime, currentTime);
       break;
     default:
-      console.error("gameState isn't what you expected");
+      throw Error(
+        `gameState isn't what you expected. gameState = ${gameState}`
+      );
   }
-  runMainGame(deltaTime, currentTime);
 });
 
 function runMainGame(deltaTime, currentTime) {
   const { nodes: bullets } = bulletContainer.getState();
   const { nodes: enemies } = enemySpawner.getState();
-
-  console.log("enemies", enemies);
-  console.log("bullets", bullets);
 
   enemies.map((enemy) => {
     bullets.map((bullet) => {
