@@ -20,7 +20,7 @@ const Spaceship = (params) => {
   });
   const animationManager = AnimationManager();
   animationManager.setState({
-    animaitonToAdd: {
+    animationToAdd: {
       name: "fly",
       frames: [
         { x: 0, y: 0 },
@@ -85,13 +85,9 @@ const Spaceship = (params) => {
   };
 
   const getState = () => {
-    const {
-      position,
-      texture,
-      frame,
-      tileWidth,
-      tileHeight,
-    } = tileSprite.getState();
+    const { position, texture, tileWidth, tileHeight } = tileSprite.getState();
+
+    const { frame } = animationManager.getState();
     return {
       position,
       texture,

@@ -7,7 +7,7 @@ const Animation = (params) => {
   const update = (deltaTime, currentTime) => {
     if (deltaTime < rate) currentAnimationTime += deltaTime;
 
-    if (currentAnimationTime < rate) {
+    if (currentAnimationTime > rate) {
       currentFrameIndex++;
       currentFrame = frames[currentFrameIndex % frames.length];
       currentAnimationTime -= rate;

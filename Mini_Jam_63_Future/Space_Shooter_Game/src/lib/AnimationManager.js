@@ -14,6 +14,7 @@ const AnimationManager = () => {
         frames,
         rate,
       });
+      console.log("inside add animation currentAnimation");
     }
 
     if (animationToPlay) {
@@ -22,7 +23,6 @@ const AnimationManager = () => {
   };
 
   const update = (deltaTime, currentTime) => {
-    console.log(currentAnimation);
     if (!currentAnimation) return;
     const { update: currentAnimationUpdate } = currentAnimation.getState();
     currentAnimationUpdate(deltaTime, currentTime);
